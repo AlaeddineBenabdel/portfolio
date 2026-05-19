@@ -17,9 +17,7 @@
   --radius: 20px;
   --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.project-card * {
-  text-decoration: none;
-}
+
 
 *, *::before, *::after {
   margin: 0;
@@ -537,6 +535,9 @@ body.scroll-enabled {
   color: inherit;
   display: block;
   cursor: none;
+}
+.project-card * {
+  text-decoration: none;
 }
 
 .project-card::before {
