@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> Portfolio</title>
+  <title>Portfolio — Alaeddine</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,6 @@
     <div class="hero-content">
       <div class="hero-left">
         <div class="photo-wrapper">
-          <!-- Remplace src par ton image -->
           <img src="ima_de34040.png" alt="Alaeddine Benabdelmoumene" class="photo" id="heroPhoto" onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex'"/>
           <div class="photo-fallback" id="photoFallback">A</div>
           <div class="photo-glow"></div>
@@ -80,7 +79,6 @@
       </button>
     </div>
 
-    
   </section>
 
   <!-- ===================== PAGE 2 : À PROPOS ===================== -->
@@ -130,32 +128,38 @@
       <div class="section-label">02 — Projets</div>
       <h2 class="section-title">Ce que j'ai <span class="gradient-text">construit</span></h2>
       <div class="projects-grid">
-        <div class="project-card">
+
+        <!-- Remplace les href par tes vraies URLs de dépôts -->
+        <a href="https://git.legaragenumerique.fr/alaeddine/oracle" target="_blank" class="project-card featured">
           <div class="project-number">01</div>
           <h3 class="project-title">Oracle</h3>
-          <p class="project-desc">Application web développée avec FastAPI permettant d’afficher des pages HTML avec Jinja2, recevoir des données JSON et gérer des fichiers statiques.</p>
+          <p class="project-desc">Application web développée avec FastAPI permettant d'afficher des pages HTML avec Jinja2, recevoir des données JSON et gérer des fichiers statiques.</p>
           <div class="project-tags">
-            <span>Python</span><span>Docker</span>
+            <span>Python</span><span>Docker</span><span>Jinja</span><span>SQL</span>
           </div>
-        </div>
-        <div class="project-card featured">
+          <div class="project-link-hint">Voir le projet →</div>
+        </a>
+
+        <a href="https://git.legaragenumerique.fr/alaeddine/morpion" target="_blank" class="project-card featured">
           <div class="project-number">02</div>
           <h3 class="project-title">Morpion</h3>
-          <p class="project-desc">J’ai réalisé un jeu de morpion en langage C afin de développer mes compétences en programmation.
-Ce projet m’a permis de travailler la gestion des tableaux, les conditions et les boucles pour créer le fonctionnement du jeu.</p>
+          <p class="project-desc">Jeu de morpion en langage C pour développer mes compétences en programmation. Gestion des tableaux, conditions et boucles pour créer le fonctionnement complet du jeu.</p>
           <div class="project-tags">
-            <span>Linux</span><span>Bash</span><span>CI/CD</span>
+            <span>C</span><span>Linux</span><span>Bash</span>
           </div>
-        </div>
-        <div class="project-card">
+          <div class="project-link-hint">Voir le projet →</div>
+        </a>
+
+        <a href="https://alaeddine-wp.lgn.dev" target="_blank" class="project-card featured">
           <div class="project-number">03</div>
           <h3 class="project-title">Forfeit</h3>
-          <p class="project-desc">J’ai créé un site de fast-food fictif avec le logiciel WordPress afin de mettre en pratique mes compétences en création de sites internet.
-Pour réaliser ce projet, j’ai commencé par choisir un thème adapté à l’univers de la restauration rapide, puis j’ai personnalisé les couleurs, les images et la mise en page pour obtenir un design moderne et attractif.</p>
+          <p class="project-desc">Site de fast-food fictif créé avec WordPress. Choix du thème, personnalisation des couleurs, images et mise en page pour obtenir un design moderne et attractif.</p>
           <div class="project-tags">
-            <span>HTML</span><span>CSS</span><span>JS</span>
+            <span>WordPress</span><span>HTML</span><span>CSS</span>
           </div>
-        </div>
+          <div class="project-link-hint">Voir le projet →</div>
+        </a>
+
       </div>
     </div>
   </section>
@@ -201,5 +205,5 @@ Pour réaliser ce projet, j’ai commencé par choisir un thème adapté à l’
   </section>
 
   <script src="script.js"></script>
-</body>  
+</body>
 </html>
