@@ -28,24 +28,29 @@ function animateFollower() {
 animateFollower();
 
 // Agrandir le follower sur les éléments cliquables
-document.querySelectorAll('button, a, .back-btn, .chip, .skill-tag').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursorFollower.style.width = '60px';
-    cursorFollower.style.height = '60px';
-    cursorFollower.style.borderColor = 'rgba(255,107,53,0.8)';
+function bindCursorHover() {
+  document.querySelectorAll('button, a, .back-btn, .chip, .skill-tag').forEach(el => {
+    // Éviter de binder deux fois
+    if (el.dataset.cursorBound) return;
+    el.dataset.cursorBound = '1';
+
+    el.addEventListener('mouseenter', () => {
+      cursorFollower.style.width = '60px';
+      cursorFollower.style.height = '60px';
+      cursorFollower.style.borderColor = 'rgba(255,107,53,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursorFollower.style.width = '36px';
+      cursorFollower.style.height = '36px';
+      cursorFollower.style.borderColor = 'rgba(255,107,53,0.5)';
+    });
   });
-  el.addEventListener('mouseleave', () => {
-    cursorFollower.style.width = '36px';
-    cursorFollower.style.height = '36px';
-    cursorFollower.style.borderColor = 'rgba(255,107,53,0.5)';
-  });
-});
+}
 
 // ─── NAVIGATION ENTRE PAGES ───────────────────
 const pages = document.querySelectorAll('.page');
 
 function goTo(pageId) {
-  // Masquer TOUTES les pages (retirer active + display:none)
   pages.forEach(p => {
     p.classList.remove('active');
     p.style.display = 'none';
@@ -54,15 +59,16 @@ function goTo(pageId) {
   const target = document.getElementById(pageId);
   if (!target) return;
 
-  // Afficher la cible puis animer
   target.style.display = 'flex';
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       target.classList.add('active');
+      // Rebind le curseur sur les nouveaux éléments affichés
+      bindCursorHover();
+      initCardTilt();
     });
   });
 
-  // Bloquer le scroll sur la hero, autoriser sur les autres
   if (pageId === 'page-hero') {
     document.body.classList.remove('scroll-enabled');
   } else {
@@ -72,11 +78,11 @@ function goTo(pageId) {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// ─── INITIALISATION : afficher la page hero ───
+// ─── INITIALISATION ───────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   goTo('page-hero');
   initParticles();
-  initCardTilt();
+  bindCursorHover();
 });
 
 // ─── PARTICULES LÉGÈRES EN FOND ───────────────
@@ -102,7 +108,7 @@ function initParticles() {
     H = canvas.height = hero.offsetHeight;
   }
   resize();
-  window.addEventListener('resize', () => { resize(); });
+  window.addEventListener('resize', resize);
 
   const COLORS = ['#ff6b35', '#ff3cac', '#2b86c5', '#784ba0'];
 
@@ -141,11 +147,14 @@ function initParticles() {
   draw();
 }
 
-// ─── EFFET TILT SUR LES CARTES ───────────────
+// ─── EFFET TILT SUR LES CARTES ────────────────
 function initCardTilt() {
   const cards = document.querySelectorAll('.project-card, .contact-card, .stat-card');
 
   cards.forEach(card => {
+    if (card.dataset.tiltBound) return;
+    card.dataset.tiltBound = '1';
+
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -163,23 +172,15 @@ function initCardTilt() {
   });
 }
 
-// ─── RÉOBSERVER LES CARTES APRÈS NAVIGATION ──
-// (les cartes sont dans des pages cachées au départ)
-const observer = new MutationObserver(() => {
-  initCardTilt();
-});
-observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
-
 // ─── ANIMATION DES CHIFFRES STATS ─────────────
-function animateCount(el, target, suffix = '') {
+function animateCount(el, target) {
   let start = 0;
-  const duration = 5000;
+  const duration = 1500;
   const step = (timestamp) => {
     if (!start) start = timestamp;
     const progress = Math.min((timestamp - start) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(eased * target);
-    el.textContent = current + suffix;
+    el.textContent = Math.round(eased * target);
     if (progress < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -202,9 +203,6 @@ aboutObserver.observe(aboutPage, { attributes: true, attributeFilter: ['class'] 
 
 // ─── NAVIGATION CLAVIER ───────────────────────
 document.addEventListener('keydown', (e) => {
-  const active = document.querySelector('.page.active');
-  if (!active) return;
-
   if (e.key === 'Escape') {
     goTo('page-hero');
   }
