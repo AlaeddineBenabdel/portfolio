@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title> Portfolio</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- CURSEUR CUSTOM -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- BRUIT DE FOND -->
+  <div class="noise"></div>
+
+  <!-- ===================== PAGE 1 : HERO ===================== -->
+  <section class="page" id="page-hero">
+
+    <nav class="navbar">
+      <div class="logo">AB<span class="dot">.</span></div>
+      <div class="nav-status">
+        <span class="status-dot"></span>
+        Disponible pour alternance
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="photo-wrapper">
+          <!-- Remplace src par ton image -->
+          <img src="ima_de34040.png" alt="Alaeddine Benabdelmoumene" class="photo" id="heroPhoto" onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex'"/>
+          <div class="photo-fallback" id="photoFallback">A</div>
+          <div class="photo-glow"></div>
+          <div class="photo-border"></div>
+        </div>
+        <div class="hero-badge">
+          <span>Dev'Ops</span>
+          <span>·</span>
+          <span>CNAM Bac+1</span>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <h1 class="hero-name">
+          <span class="name-line">Alaeddine</span>
+          <span class="name-line gradient-text">Benabdelmoumene</span>
+        </h1>
+        <p class="hero-tagline">
+          Étudiant en Dev'Ops passionné par l'informatique,<br>
+          en route vers une <strong>Licence Informatique</strong><br>
+          pour aller encore plus loin.
+        </p>
+        <div class="hero-chips">
+          <span class="chip">⚙️ DevOps</span>
+          <span class="chip">💻 Dev Web</span>
+          <span class="chip">🐧 Linux</span>
+          <span class="chip">🐳 Docker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goTo('page-about')">
+        <span class="btn-label">À propos de moi</span>
+        <div class="btn-bg"></div>
+      </button>
+      <button class="nav-btn" onclick="goTo('page-projects')">
+        <span class="btn-label">Mes projets</span>
+        <div class="btn-bg"></div>
+      </button>
+      <button class="nav-btn" onclick="goTo('page-contact')">
+        <span class="btn-label">Me retrouver</span>
+        <div class="btn-bg"></div>
+      </button>
+    </div>
+
+    
+  </section>
+
+  <!-- ===================== PAGE 2 : À PROPOS ===================== -->
+  <section class="page" id="page-about">
+    <div class="back-btn" onclick="goTo('page-hero')">← Retour</div>
+    <div class="page-inner">
+      <div class="section-label">01 — À propos</div>
+      <h2 class="section-title">Qui suis-je <span class="gradient-text">vraiment ?</span></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>Je m'appelle <strong>Alaeddine Benabdelmoumene</strong>, étudiant en DSP Dev'Ops au CNAM (60 ECTS). Passionné d'informatique depuis toujours, je me réoriente vers une <strong>Licence Informatique L2</strong> pour renforcer mes bases théoriques.</p>
+          <p>Mon parcours DevOps m'a donné une vision concrète du monde tech : automatisation, CI/CD, conteneurisation. Je veux maintenant maîtriser les fondements algorithmiques et scientifiques qui me permettront d'aller encore plus loin.</p>
+          <p>Curieux, autonome, et toujours en train d'apprendre quelque chose de nouveau.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <div class="stat-number gradient-text">60</div>
+            <div class="stat-label">Crédits ECTS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number gradient-text">Bac+1</div>
+            <div class="stat-label">Niveau actuel</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number gradient-text">L2</div>
+            <div class="stat-label">Objectif rentrée 2026</div>
+          </div>
+        </div>
+      </div>
+      <div class="skills-section">
+        <div class="skill-tag">Linux</div>
+        <div class="skill-tag">Docker</div>
+        <div class="skill-tag">Git</div>
+        <div class="skill-tag">CI/CD</div>
+        <div class="skill-tag">Python</div>
+        <div class="skill-tag">Bash</div>
+        <div class="skill-tag">Réseaux</div>
+        <div class="skill-tag">HTML/CSS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PAGE 3 : PROJETS ===================== -->
+  <section class="page" id="page-projects">
+    <div class="back-btn" onclick="goTo('page-hero')">← Retour</div>
+    <div class="page-inner">
+      <div class="section-label">02 — Projets</div>
+      <h2 class="section-title">Ce que j'ai <span class="gradient-text">construit</span></h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-number">01</div>
+          <h3 class="project-title">Projet 1</h3>
+          <p class="project-desc">Décris ici ton premier projet : contexte, technologies utilisées, résultat.</p>
+          <div class="project-tags">
+            <span>Python</span><span>Docker</span>
+          </div>
+        </div>
+        <div class="project-card featured">
+          <div class="project-number">02</div>
+          <h3 class="project-title">Projet 2</h3>
+          <p class="project-desc">Décris ici ton deuxième projet. Celui-ci est mis en avant avec un style différent.</p>
+          <div class="project-tags">
+            <span>Linux</span><span>Bash</span><span>CI/CD</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-number">03</div>
+          <h3 class="project-title">Projet 3</h3>
+          <p class="project-desc">Décris ici ton troisième projet. Ajoute un lien GitHub si tu en as un.</p>
+          <div class="project-tags">
+            <span>HTML</span><span>CSS</span><span>JS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PAGE 4 : CONTACT ===================== -->
+  <section class="page" id="page-contact">
+    <div class="back-btn" onclick="goTo('page-hero')">← Retour</div>
+    <div class="page-inner contact-inner">
+      <div class="section-label">03 — Contact</div>
+      <h2 class="section-title">Me <span class="gradient-text">retrouver</span></h2>
+      <p class="contact-intro">Tu veux discuter d'un projet, d'une alternance, ou juste échanger ? Je réponds vite.</p>
+      <div class="contact-links">
+        <a href="mailto:alaeddine.ben2007@gmail.com" class="contact-card">
+          <span class="contact-icon">✉️</span>
+          <div>
+            <div class="contact-type">Email</div>
+            <div class="contact-value">alaeddine.ben2007@gmail.com</div>
+          </div>
+        </a>
+        <a href="tel:0618956717" class="contact-card">
+          <span class="contact-icon">📱</span>
+          <div>
+            <div class="contact-type">Téléphone</div>
+            <div class="contact-value">06 18 95 67 17</div>
+          </div>
+        </a>
+        <a href="https://git.legaragenumerique.fr/alaeddine" target="_blank" class="contact-card">
+          <span class="contact-icon">🐙</span>
+          <div>
+            <div class="contact-type">Git</div>
+            <div class="contact-value">Mes projets</div>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/alaeddine-benabdelmoumene-6b294a318/" target="_blank" class="contact-card">
+          <span class="contact-icon">💼</span>
+          <div>
+            <div class="contact-type">LinkedIn</div>
+            <div class="contact-value">Alaeddine BENABDELMOUMENE</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

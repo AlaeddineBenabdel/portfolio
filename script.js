@@ -1,0 +1,211 @@
+/* ============================================
+   PORTFOLIO — script.js
+   Alaeddine Benabdelmoumene
+   ============================================ */
+
+// ─── CURSEUR CUSTOM ───────────────────────────
+const cursor = document.getElementById('cursor');
+const cursorFollower = document.getElementById('cursorFollower');
+
+let mouseX = 0, mouseY = 0;
+let followerX = 0, followerY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+});
+
+// Follower avec lerp pour un effet fluide
+function animateFollower() {
+  followerX += (mouseX - followerX) * 0.1;
+  followerY += (mouseY - followerY) * 0.1;
+  cursorFollower.style.left = followerX + 'px';
+  cursorFollower.style.top = followerY + 'px';
+  requestAnimationFrame(animateFollower);
+}
+animateFollower();
+
+// Agrandir le follower sur les éléments cliquables
+document.querySelectorAll('button, a, .back-btn, .chip, .skill-tag').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursorFollower.style.width = '60px';
+    cursorFollower.style.height = '60px';
+    cursorFollower.style.borderColor = 'rgba(255,107,53,0.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursorFollower.style.width = '36px';
+    cursorFollower.style.height = '36px';
+    cursorFollower.style.borderColor = 'rgba(255,107,53,0.5)';
+  });
+});
+
+// ─── NAVIGATION ENTRE PAGES ───────────────────
+const pages = document.querySelectorAll('.page');
+
+function goTo(pageId) {
+  // Masquer TOUTES les pages (retirer active + display:none)
+  pages.forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+
+  const target = document.getElementById(pageId);
+  if (!target) return;
+
+  // Afficher la cible puis animer
+  target.style.display = 'flex';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      target.classList.add('active');
+    });
+  });
+
+  // Bloquer le scroll sur la hero, autoriser sur les autres
+  if (pageId === 'page-hero') {
+    document.body.classList.remove('scroll-enabled');
+  } else {
+    document.body.classList.add('scroll-enabled');
+  }
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ─── INITIALISATION : afficher la page hero ───
+document.addEventListener('DOMContentLoaded', () => {
+  goTo('page-hero');
+  initParticles();
+  initCardTilt();
+});
+
+// ─── PARTICULES LÉGÈRES EN FOND ───────────────
+function initParticles() {
+  const hero = document.getElementById('page-hero');
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = `
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  `;
+  hero.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let W, H, particles;
+
+  function resize() {
+    W = canvas.width = hero.offsetWidth;
+    H = canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); });
+
+  const COLORS = ['#ff6b35', '#ff3cac', '#2b86c5', '#784ba0'];
+
+  function createParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 2 + 0.5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.6 + 0.2,
+    };
+  }
+
+  particles = Array.from({ length: 60 }, createParticle);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ─── EFFET TILT SUR LES CARTES ───────────────
+function initCardTilt() {
+  const cards = document.querySelectorAll('.project-card, .contact-card, .stat-card');
+
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+      card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
+// ─── RÉOBSERVER LES CARTES APRÈS NAVIGATION ──
+// (les cartes sont dans des pages cachées au départ)
+const observer = new MutationObserver(() => {
+  initCardTilt();
+});
+observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
+
+// ─── ANIMATION DES CHIFFRES STATS ─────────────
+function animateCount(el, target, suffix = '') {
+  let start = 0;
+  const duration = 5000;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(eased * target);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// Déclencher quand la page "À propos" devient active
+const aboutPage = document.getElementById('page-about');
+const aboutObserver = new MutationObserver((mutations) => {
+  mutations.forEach(m => {
+    if (m.target.classList.contains('active')) {
+      const statNumbers = document.querySelectorAll('.stat-number');
+      statNumbers.forEach(el => {
+        const val = el.textContent.trim();
+        if (val === '60') animateCount(el, 60);
+      });
+    }
+  });
+});
+aboutObserver.observe(aboutPage, { attributes: true, attributeFilter: ['class'] });
+
+// ─── NAVIGATION CLAVIER ───────────────────────
+document.addEventListener('keydown', (e) => {
+  const active = document.querySelector('.page.active');
+  if (!active) return;
+
+  if (e.key === 'Escape') {
+    goTo('page-hero');
+  }
+});
