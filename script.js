@@ -3,48 +3,57 @@
    Alaeddine Benabdelmoumene
    ============================================ */
 
-// ─── CURSEUR CUSTOM ───────────────────────────
+// ─── DÉTECTION TOUCH ──────────────────────────
+const isTouchDevice = () => window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+// ─── CURSEUR CUSTOM (desktop uniquement) ──────
 const cursor = document.getElementById('cursor');
 const cursorFollower = document.getElementById('cursorFollower');
 
 let mouseX = 0, mouseY = 0;
 let followerX = 0, followerY = 0;
 
-document.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  cursor.style.left = mouseX + 'px';
-  cursor.style.top = mouseY + 'px';
-});
-
-// Follower avec lerp pour un effet fluide
-function animateFollower() {
-  followerX += (mouseX - followerX) * 0.1;
-  followerY += (mouseY - followerY) * 0.1;
-  cursorFollower.style.left = followerX + 'px';
-  cursorFollower.style.top = followerY + 'px';
-  requestAnimationFrame(animateFollower);
-}
-animateFollower();
-
-// Agrandir le follower sur les éléments cliquables
-function bindCursorHover() {
-  document.querySelectorAll('button, a, .back-btn, .chip, .skill-tag').forEach(el => {
-    // Éviter de binder deux fois
-    if (el.dataset.cursorBound) return;
-    el.dataset.cursorBound = '1';
-
-    el.addEventListener('mouseenter', () => {
-      cursorFollower.style.width = '60px';
-      cursorFollower.style.height = '60px';
-      cursorFollower.style.borderColor = 'rgba(255,107,53,0.8)';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursorFollower.style.width = '36px';
-      cursorFollower.style.height = '36px';
-      cursorFollower.style.borderColor = 'rgba(255,107,53,0.5)';
-    });
+if (!isTouchDevice()) {
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
   });
+
+  function animateFollower() {
+    followerX += (mouseX - followerX) * 0.1;
+    followerY += (mouseY - followerY) * 0.1;
+    cursorFollower.style.left = followerX + 'px';
+    cursorFollower.style.top = followerY + 'px';
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+
+  function bindCursorHover() {
+    document.querySelectorAll('button, a, .back-btn, .chip, .skill-tag').forEach(el => {
+      if (el.dataset.cursorBound) return;
+      el.dataset.cursorBound = '1';
+
+      el.addEventListener('mouseenter', () => {
+        cursorFollower.style.width = '60px';
+        cursorFollower.style.height = '60px';
+        cursorFollower.style.borderColor = 'rgba(255,107,53,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorFollower.style.width = '36px';
+        cursorFollower.style.height = '36px';
+        cursorFollower.style.borderColor = 'rgba(255,107,53,0.5)';
+      });
+    });
+  }
+} else {
+  // Sur mobile, on cache les curseurs
+  if (cursor) cursor.style.display = 'none';
+  if (cursorFollower) cursorFollower.style.display = 'none';
+
+  // Stub vide pour éviter les erreurs
+  function bindCursorHover() {}
 }
 
 // ─── NAVIGATION ENTRE PAGES ───────────────────
@@ -60,29 +69,29 @@ function goTo(pageId) {
   if (!target) return;
 
   target.style.display = 'flex';
+
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       target.classList.add('active');
-      // Rebind le curseur sur les nouveaux éléments affichés
-      bindCursorHover();
+      if (!isTouchDevice()) bindCursorHover();
       initCardTilt();
     });
   });
 
   if (pageId === 'page-hero') {
     document.body.classList.remove('scroll-enabled');
+    window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
     document.body.classList.add('scroll-enabled');
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
-
-  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // ─── INITIALISATION ───────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   goTo('page-hero');
   initParticles();
-  bindCursorHover();
+  if (!isTouchDevice()) bindCursorHover();
 });
 
 // ─── PARTICULES LÉGÈRES EN FOND ───────────────
@@ -101,7 +110,7 @@ function initParticles() {
   hero.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
-  let W, H, particles;
+  let W, H;
 
   function resize() {
     W = canvas.width = hero.offsetWidth;
@@ -111,6 +120,8 @@ function initParticles() {
   window.addEventListener('resize', resize);
 
   const COLORS = ['#ff6b35', '#ff3cac', '#2b86c5', '#784ba0'];
+  // Moins de particules sur mobile pour économiser la batterie
+  const count = isTouchDevice() ? 30 : 60;
 
   function createParticle() {
     return {
@@ -124,7 +135,7 @@ function initParticles() {
     };
   }
 
-  particles = Array.from({ length: 60 }, createParticle);
+  const particles = Array.from({ length: count }, createParticle);
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
@@ -147,10 +158,11 @@ function initParticles() {
   draw();
 }
 
-// ─── EFFET TILT SUR LES CARTES ────────────────
+// ─── EFFET TILT SUR LES CARTES (desktop only) ─
 function initCardTilt() {
-  const cards = document.querySelectorAll('.project-card, .contact-card, .stat-card');
+  if (isTouchDevice()) return;
 
+  const cards = document.querySelectorAll('.project-card, .contact-card, .stat-card');
   cards.forEach(card => {
     if (card.dataset.tiltBound) return;
     card.dataset.tiltBound = '1';
@@ -186,7 +198,6 @@ function animateCount(el, target) {
   requestAnimationFrame(step);
 }
 
-// Déclencher quand la page "À propos" devient active
 const aboutPage = document.getElementById('page-about');
 const aboutObserver = new MutationObserver((mutations) => {
   mutations.forEach(m => {
