@@ -27,11 +27,11 @@ a {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
   scroll-behavior: smooth;
-  cursor: none;
 }
 
 body {
@@ -41,37 +41,50 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body.scroll-enabled {
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ============================================
-   CURSEUR CUSTOM
+   CURSEUR CUSTOM — desktop uniquement
    ============================================ */
-.cursor {
-  width: 10px;
-  height: 10px;
-  background: linear-gradient(135deg, var(--grad-1), var(--grad-3));
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s;
+@media (hover: hover) and (pointer: fine) {
+  html { cursor: none; }
+
+  .cursor {
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, var(--grad-1), var(--grad-3));
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+
+  .cursor-follower {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid rgba(255,107,53,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease, top 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
+  }
 }
 
-.cursor-follower {
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid rgba(255,107,53,0.5);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: left 0.12s ease, top 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
+@media (hover: none), (pointer: coarse) {
+  .cursor,
+  .cursor-follower {
+    display: none !important;
+  }
 }
 
 /* ============================================
@@ -92,19 +105,18 @@ body.scroll-enabled {
    PAGES
    ============================================ */
 .page {
-  height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   position: relative;
   display: none;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0 5vw;
   z-index: 1;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
   pointer-events: none;
-  overflow: hidden;
 }
 
 .page.active {
@@ -114,13 +126,18 @@ body.scroll-enabled {
   pointer-events: all;
 }
 
+#page-hero {
+  justify-content: center;
+  overflow: hidden;
+}
+
 #page-about,
 #page-projects,
 #page-contact {
-  justify-content: center;
-  padding-top: 4rem;
-  padding-bottom: 2rem;
-  overflow: hidden;
+  justify-content: flex-start;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
+  overflow: visible;
 }
 
 /* ============================================
@@ -130,7 +147,8 @@ body.scroll-enabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -151,12 +169,13 @@ body.scroll-enabled {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 100px;
+  white-space: nowrap;
 }
 
 .status-dot {
@@ -164,6 +183,7 @@ body.scroll-enabled {
   height: 8px;
   background: #4ade80;
   border-radius: 50%;
+  flex-shrink: 0;
   animation: pulse-green 2s infinite;
 }
 
@@ -179,8 +199,8 @@ body.scroll-enabled {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6vw;
-  padding: 2rem 0;
+  gap: 5vw;
+  padding: 1.5rem 0;
 }
 
 .hero-left {
@@ -193,8 +213,8 @@ body.scroll-enabled {
 
 .photo-wrapper {
   position: relative;
-  width: 260px;
-  height: 260px;
+  width: 220px;
+  height: 220px;
 }
 
 .photo {
@@ -259,25 +279,27 @@ body.scroll-enabled {
 .hero-badge {
   display: flex;
   gap: 8px;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: 100px;
+  white-space: nowrap;
 }
 
 .hero-right {
   flex: 1;
+  min-width: 0;
 }
 
 .hero-name {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: clamp(2.2rem, 5vw, 4.0rem);
+  font-size: clamp(1.8rem, 4vw, 4.0rem);
   line-height: 1.05;
   letter-spacing: -2px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   animation: fadeUp 0.6s ease both;
   animation-delay: 0.2s;
 }
@@ -301,10 +323,10 @@ body.scroll-enabled {
 }
 
 .hero-tagline {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.8;
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.4rem;
   animation: fadeUp 0.6s ease both;
   animation-delay: 0.3s;
 }
@@ -316,19 +338,20 @@ body.scroll-enabled {
 .hero-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   animation: fadeUp 0.6s ease both;
   animation-delay: 0.4s;
 }
 
 .chip {
-  font-size: 0.8rem;
-  padding: 6px 14px;
+  font-size: 0.78rem;
+  padding: 5px 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
   color: var(--text-muted);
   transition: all 0.3s ease;
+  cursor: default;
 }
 
 .chip:hover {
@@ -343,8 +366,9 @@ body.scroll-enabled {
 .nav-buttons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 2rem 0 2.5rem;
+  gap: 12px;
+  padding: 1.5rem 0 2rem;
+  flex-shrink: 0;
 }
 
 .nav-btn {
@@ -352,24 +376,30 @@ body.scroll-enabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 1.4rem 1rem;
+  padding: 1.1rem 0.8rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  cursor: none;
+  cursor: pointer;
   overflow: hidden;
   transition: all var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.nav-btn:hover {
+.nav-btn:hover,
+.nav-btn:active {
   border-color: rgba(255,107,53,0.5);
   transform: translateY(-4px);
   box-shadow: 0 20px 50px rgba(255,60,172,0.15);
+}
+
+.nav-btn:active .btn-bg {
+  opacity: 1;
 }
 
 .nav-btn:hover .btn-bg {
@@ -387,33 +417,41 @@ body.scroll-enabled {
 .btn-label {
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
 /* ============================================
    PAGES INTÉRIEURES
    ============================================ */
 .back-btn {
-  position: absolute;
-  top: 1.8rem;
+  position: fixed;
+  top: 1.2rem;
   left: 5vw;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 0.85rem;
   color: var(--text-muted);
-  cursor: none;
+  cursor: pointer;
   transition: color 0.3s;
-  z-index: 10;
+  z-index: 100;
+  background: rgba(10,10,15,0.8);
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  touch-action: manipulation;
 }
 
-.back-btn:hover {
+.back-btn:hover,
+.back-btn:active {
   color: var(--text);
 }
 
 .page-inner {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: 0;
   max-width: 1000px;
   margin: 0 auto;
@@ -421,7 +459,7 @@ body.scroll-enabled {
 }
 
 .section-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--grad-1);
@@ -450,7 +488,7 @@ body.scroll-enabled {
 .about-text p {
   color: var(--text-muted);
   margin-bottom: 0.7rem;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.7;
 }
 
@@ -483,25 +521,25 @@ body.scroll-enabled {
 
 .stat-number {
   font-family: 'Syne', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  min-width: 70px;
+  min-width: 65px;
 }
 
 .stat-label {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .skills-section {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .skill-tag {
-  font-size: 0.82rem;
-  padding: 7px 16px;
+  font-size: 0.8rem;
+  padding: 6px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
@@ -517,7 +555,7 @@ body.scroll-enabled {
 }
 
 /* ============================================
-   PROJETS — cards comme liens
+   PROJETS
    ============================================ */
 .projects-grid {
   display: grid;
@@ -525,7 +563,6 @@ body.scroll-enabled {
   gap: 14px;
 }
 
-/* La card est maintenant un <a>, on retire les styles par défaut des liens */
 .project-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -534,12 +571,13 @@ body.scroll-enabled {
   position: relative;
   transition: all var(--transition);
   overflow: hidden;
-  /* Styles de lien réinitialisés */
   text-decoration: none;
   color: inherit;
   display: block;
-  cursor: none;
+  cursor: pointer;
+  touch-action: manipulation;
 }
+
 .project-card * {
   text-decoration: none;
 }
@@ -553,45 +591,45 @@ body.scroll-enabled {
   transition: opacity 0.4s;
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card:active {
   border-color: rgba(255,107,53,0.4);
   transform: translateY(-8px);
   box-shadow: 0 30px 60px rgba(0,0,0,0.4);
 }
 
-.project-card:hover::before {
+.project-card:hover::before,
+.project-card:active::before {
   opacity: 1;
 }
 
-/* La classe featured sert uniquement à mettre en avant la card,
-   mais avec le même fond que les autres pour rester cohérent */
 .project-card.featured {
   border-color: rgba(255,107,53,0.3);
 }
 
 .project-number {
   font-family: 'Syne', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: var(--grad-1);
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   letter-spacing: 2px;
 }
 
 .project-title {
   font-family: 'Syne', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
   position: relative;
   z-index: 1;
 }
 
 .project-desc {
   color: var(--text-muted);
-  font-size: 0.88rem;
-  line-height: 1.7;
-  margin-bottom: 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  margin-bottom: 1rem;
   position: relative;
   z-index: 1;
 }
@@ -599,24 +637,23 @@ body.scroll-enabled {
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   position: relative;
   z-index: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .project-tags span {
-  font-size: 0.72rem;
-  padding: 4px 10px;
+  font-size: 0.7rem;
+  padding: 3px 9px;
   background: rgba(255,255,255,0.06);
   border: 1px solid var(--border);
   border-radius: 100px;
   color: var(--text-muted);
 }
 
-/* Indication visuelle que la card est cliquable */
 .project-link-hint {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--grad-1);
   opacity: 0;
   transform: translateX(-6px);
@@ -625,7 +662,8 @@ body.scroll-enabled {
   z-index: 1;
 }
 
-.project-card:hover .project-link-hint {
+.project-card:hover .project-link-hint,
+.project-card:active .project-link-hint {
   opacity: 1;
   transform: translateX(0);
 }
@@ -634,36 +672,39 @@ body.scroll-enabled {
    CONTACT
    ============================================ */
 .contact-inner {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .contact-intro {
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-bottom: 1rem;
 }
 
 .contact-links {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 .contact-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.1rem 1.4rem;
+  padding: 1rem 1.2rem;
   text-decoration: none;
   color: inherit;
   transition: all var(--transition);
-  cursor: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  min-width: 0;
 }
 
-.contact-card:hover {
+.contact-card:hover,
+.contact-card:active {
   border-color: rgba(255,107,53,0.5);
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -671,21 +712,24 @@ body.scroll-enabled {
 }
 
 .contact-icon {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
 }
 
 .contact-type {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--grad-1);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .contact-value {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ============================================
@@ -697,18 +741,52 @@ body.scroll-enabled {
 }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE — Tablette
    ============================================ */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================
+   RESPONSIVE — Mobile
+   ============================================ */
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+  }
+
+  #page-hero {
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-bottom: 1rem;
+  }
+
   .hero-content {
     flex-direction: column;
     text-align: center;
-    gap: 2rem;
+    gap: 1.5rem;
+    padding: 0.5rem 0 1rem;
+    flex: unset;
   }
 
   .photo-wrapper {
-    width: 180px;
-    height: 180px;
+    width: 150px;
+    height: 150px;
+  }
+
+  .photo-fallback {
+    font-size: 3.5rem;
+  }
+
+  .hero-name {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    letter-spacing: -1px;
+  }
+
+  .hero-tagline {
+    font-size: 0.88rem;
   }
 
   .hero-chips {
@@ -717,17 +795,91 @@ body.scroll-enabled {
 
   .nav-buttons {
     grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 1rem 0 1.5rem;
+  }
+
+  .nav-btn {
+    padding: 1rem;
+    font-size: 0.95rem;
   }
 
   .about-grid {
     grid-template-columns: 1fr;
   }
 
+  .about-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .stat-card {
+    flex: 1;
+    min-width: calc(50% - 0.3rem);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+    min-width: unset;
+  }
+
   .projects-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .contact-links {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .contact-value {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  #page-about,
+  #page-projects,
+  #page-contact {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .navbar {
+    padding: 1rem 0;
+  }
+
+  .nav-status {
+    font-size: 0.68rem;
+    padding: 4px 10px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — Très petit (≤380px)
+   ============================================ */
+@media (max-width: 380px) {
+  .photo-wrapper {
+    width: 130px;
+    height: 130px;
+  }
+
+  .hero-name {
+    font-size: 1.5rem;
+  }
+
+  .hero-badge {
+    font-size: 0.68rem;
   }
 }
